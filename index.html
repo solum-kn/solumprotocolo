@@ -1,0 +1,970 @@
+<!DOCTYPE html> 
+<html lang="es"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>SOLUM · Agenda tu Sesión</title> 
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=Outfit:wght@200;300;400&display=swap" rel="stylesheet"> 
+    <style> 
+        :root { 
+            --ink: #07060A; 
+            --deep: #0D0C10; 
+            --cream: #EAE3D2; 
+            --bone: #F2EBD9; 
+            --copper: #B5813A; 
+            /* OPTIMIZACIÓN DE CONTRASTE: Tonos aclarados para legibilidad absoluta en pantallas OLED/oscuras */
+            --stone: #C4BEB5; 
+            --muted: #A39B92; 
+            --line: rgba(181,129,58,0.18); 
+            --green: #1b4332; 
+            --green-hover: #2d6a4f;
+        } 
+
+        *, *::before, *::after { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        } 
+
+        html { 
+            scroll-behavior: smooth; 
+        } 
+
+        body { 
+            background: var(--ink); 
+            color: var(--cream); 
+            font-family: 'Outfit', sans-serif; 
+            font-weight: 300; 
+            -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden; 
+        } 
+
+        body::before { 
+            content: ''; 
+            position: fixed; 
+            inset: 0; 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E"); 
+            pointer-events: none; 
+            z-index: 0; 
+            mix-blend-mode: screen; 
+        } 
+
+        /* PROGRESS */ 
+        .progress-bar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 100; 
+            height: 2px; 
+            background: rgba(181,129,58,0.15); 
+        } 
+
+        .progress-fill { 
+            height: 100%; 
+            background: var(--copper); 
+            transition: width 0.6s cubic-bezier(0.22,1,0.36,1); 
+            width: 25%; 
+        } 
+
+        /* NAV */ 
+        nav { 
+            position: fixed; 
+            top: 2px; 
+            left: 0; right: 0; 
+            z-index: 99; 
+            background: rgba(7,6,10,0.92); 
+            backdrop-filter: blur(16px); 
+            border-bottom: 1px solid var(--line); 
+            padding: 0 32px; 
+            height: 52px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+        } 
+
+        .nav-brand { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 17px; 
+            font-weight: 300; 
+            letter-spacing: 0.35em; 
+            color: var(--bone); 
+            text-decoration: none; 
+        } 
+
+        .nav-steps { 
+            display: flex; 
+            gap: 6px; 
+            align-items: center; 
+        } 
+
+        .step-dot { 
+            width: 6px; 
+            height: 6px; 
+            border-radius: 50%; 
+            background: var(--muted); 
+            transition: all 0.4s; 
+        } 
+
+        .step-dot.active { 
+            background: var(--copper); 
+            transform: scale(1.3); 
+        } 
+
+        .step-dot.done { 
+            background: rgba(181,129,58,0.4); 
+        } 
+
+        /* SCREENS */ 
+        .screen { 
+            display: none; 
+            position: relative; 
+            z-index: 1; 
+            min-height: 100vh; 
+            padding: 72px 0 80px; 
+        } 
+
+        .screen.active { 
+            display: block; 
+        } 
+
+        .wrap { 
+            max-width: 660px; 
+            margin: 0 auto; 
+            padding: 0 32px; 
+        } 
+
+        /* HEADERS */ 
+        .s-label { 
+            font-size: 7.5px; 
+            font-weight: 300; 
+            letter-spacing: 0.58em; 
+            text-transform: uppercase; 
+            color: var(--copper); 
+            margin-bottom: 12px; 
+        } 
+
+        .s-title { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: clamp(34px, 7vw, 48px); 
+            font-weight: 300; 
+            color: var(--bone); 
+            line-height: 1.1; 
+            letter-spacing: 0.03em; 
+            margin-bottom: 16px; 
+        } 
+
+        .s-sub { 
+            font-size: 13.5px; 
+            color: var(--stone); 
+            line-height: 2; 
+            margin-bottom: 40px; 
+        } 
+
+        .rule { 
+            height: 1px; 
+            background: linear-gradient(90deg, rgba(181,129,58,0.25), transparent 70%); 
+            margin: 36px 0; 
+        } 
+
+        /* ── SCREEN 1: SERVICIOS ── */ 
+        .service-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            margin-bottom: 28px; 
+        } 
+
+        .service-card { 
+            border: 1px solid rgba(181,129,58,0.12); 
+            padding: 24px 20px; 
+            background: rgba(255,255,255,0.02); 
+            cursor: pointer; 
+            transition: all 0.35s; 
+            position: relative; 
+        } 
+
+        .service-card:hover { 
+            border-color: rgba(181,129,58,0.35); 
+            background: rgba(181,129,58,0.05); 
+        } 
+
+        .service-card.selected { 
+            border-color: var(--copper); 
+            background: rgba(181,129,58,0.08); 
+        } 
+
+        .service-card.selected::after { 
+            content: '✦'; 
+            position: absolute; 
+            top: 12px; 
+            right: 14px; 
+            color: var(--copper); 
+            font-size: 10px; 
+        } 
+
+        .s-card-tag { 
+            font-size: 7.5px; 
+            letter-spacing: 0.3em; 
+            text-transform: uppercase; 
+            color: var(--copper); 
+            margin-bottom: 10px; 
+        } 
+
+        .s-card-name { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 18px; 
+            font-weight: 300; 
+            font-style: italic; 
+            color: var(--cream); 
+            margin-bottom: 14px; 
+            line-height: 1.3; 
+        } 
+
+        .s-card-price { 
+            font-size: 24px; 
+            font-weight: 200; 
+            color: var(--bone); 
+        } 
+
+        .s-card-price sub { 
+            font-size: 9px; 
+            color: var(--stone); 
+            letter-spacing: 0.2em; 
+            text-transform: uppercase; 
+            vertical-align: middle; 
+        } 
+
+        .anticipo-box { 
+            border: 1px solid var(--line); 
+            padding: 20px 22px; 
+            margin-bottom: 28px; 
+            background: rgba(181,129,58,0.03); 
+        } 
+
+        .anticipo-label { 
+            font-size: 7.5px; 
+            letter-spacing: 0.5em; 
+            text-transform: uppercase; 
+            color: var(--copper); 
+            margin-bottom: 10px; 
+        } 
+
+        .anticipo-text { 
+            font-size: 13px; 
+            color: var(--stone); 
+            line-height: 1.9; 
+        } 
+
+        .anticipo-text strong { 
+            color: var(--cream); 
+            font-weight: 400; 
+        } 
+
+        /* ── SCREEN 2: POLÍTICAS ── */ 
+        .policy { 
+            margin-bottom: 32px; 
+            padding-bottom: 32px; 
+            border-bottom: 1px solid rgba(181,129,58,0.07); 
+        } 
+
+        .policy:last-of-type { 
+            border-bottom: none; 
+            margin-bottom: 0; 
+        } 
+
+        .p-header { 
+            display: flex; 
+            gap: 14px; 
+            align-items: flex-start; 
+            margin-bottom: 12px; 
+        } 
+
+        .p-num { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 11px; 
+            color: var(--copper); 
+            opacity: 0.6; 
+            min-width: 22px; 
+            padding-top: 4px; 
+        } 
+
+        .p-title { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 20px; 
+            font-weight: 300; 
+            color: var(--bone); 
+            line-height: 1.2; 
+        } 
+
+        .p-body { 
+            font-size: 13px; 
+            color: var(--stone); 
+            line-height: 2; 
+            padding-left: 36px; 
+        } 
+
+        .p-body strong { 
+            color: var(--cream); 
+            font-weight: 400; 
+        } 
+
+        .p-highlight { 
+            margin-top: 12px; 
+            margin-left: 36px; 
+            padding: 12px 16px; 
+            border-left: 1px solid var(--copper); 
+            background: rgba(181,129,58,0.04); 
+            font-size: 13px; 
+            color: var(--cream); 
+            line-height: 1.9; 
+        } 
+
+        .policies-note { 
+            padding: 18px 20px; 
+            border: 1px solid rgba(181,129,58,0.2); 
+            background: rgba(181,129,58,0.03); 
+            margin-bottom: 24px; 
+        } 
+
+        .policies-note p { 
+            font-size: 13px; 
+            color: var(--stone); 
+            line-height: 1.9; 
+        } 
+
+        .policies-note strong { 
+            color: var(--cream); 
+            font-weight: 400; 
+        } 
+
+        .accept-wrap { 
+            padding: 20px 22px; 
+            border: 1px solid var(--line); 
+            margin-bottom: 0; 
+        } 
+
+        .accept-label { 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 14px; 
+            cursor: pointer; 
+        } 
+
+        .custom-check { 
+            width: 16px; 
+            height: 16px; 
+            border: 1px solid rgba(181,129,58,0.4); 
+            flex-shrink: 0; 
+            margin-top: 2px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.3s; 
+        } 
+
+        .custom-check.checked { 
+            background: var(--copper); 
+            border-color: var(--copper); 
+        } 
+
+        .check-inner { 
+            width: 7px; 
+            height: 7px; 
+            background: var(--ink); 
+            opacity: 0; 
+            transition: opacity 0.3s; 
+        } 
+
+        .custom-check.checked .check-inner { 
+            opacity: 1; 
+        } 
+
+        .accept-text { 
+            font-size: 13px; 
+            color: var(--stone); 
+            line-height: 1.8; 
+        } 
+
+        .accept-text strong { 
+            color: var(--cream); 
+            font-weight: 400; 
+        } 
+
+        /* ── SCREEN 3: CALENDLY ── */ 
+        .calendly-wrap { 
+            margin-top: 8px; 
+            border: 1px solid var(--line); 
+            overflow: hidden; 
+            background: #fff; 
+        } 
+
+        .calendly-inline-widget { 
+            min-width: 280px; 
+            height: 700px; 
+        } 
+
+        /* ── SCREEN 4: PAGO ── */ 
+        .payment-intro { 
+            padding: 24px 24px; 
+            border: 1px solid var(--line); 
+            background: rgba(181,129,58,0.03); 
+            margin-bottom: 28px; 
+        } 
+
+        .payment-intro p { 
+            font-size: 13.5px; 
+            color: var(--stone); 
+            line-height: 2; 
+        } 
+
+        .payment-intro strong { 
+            color: var(--cream); 
+            font-weight: 400; 
+        } 
+
+        .payment-steps { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 2px; 
+            margin-bottom: 28px; 
+        } 
+
+        .pay-step { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 16px; 
+            padding: 20px 20px; 
+            border: 1px solid rgba(181,129,58,0.1); 
+            background: rgba(255,255,255,0.01); 
+        } 
+
+        .pay-step-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .pay-step-num { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 20px; 
+            font-weight: 300; 
+            color: var(--copper); 
+            min-width: 28px; 
+            line-height: 1; 
+            padding-top: 2px; 
+        } 
+
+        .pay-step-content { 
+            flex: 1; 
+        } 
+
+        .pay-step-title { 
+            font-size: 13.5px; 
+            font-weight: 400; 
+            color: var(--cream); 
+            margin-bottom: 4px; 
+            letter-spacing: 0.02em; 
+        } 
+
+        .pay-step-desc { 
+            font-size: 12.5px; 
+            color: var(--stone); 
+            line-height: 1.8; 
+        } 
+
+        .pay-step-amount { 
+            font-size: 22px; 
+            font-weight: 200; 
+            color: var(--bone); 
+            text-align: right; 
+            white-space: nowrap; 
+        } 
+
+        .pay-step-amount span { 
+            display: block; 
+            font-size: 8px; 
+            letter-spacing: 0.3em; 
+            color: var(--stone); 
+            text-transform: uppercase; 
+            text-align: right; 
+        } 
+
+        .pay-cta-box { 
+            border: 1px solid rgba(181,129,58,0.3); 
+            padding: 28px 24px; 
+            text-align: center; 
+            background: rgba(181,129,58,0.03); 
+        } 
+
+        .pay-cta-title { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 22px; 
+            font-weight: 300; 
+            font-style: italic; 
+            color: var(--bone); 
+            margin-bottom: 8px; 
+        } 
+
+        .pay-cta-sub { 
+            font-size: 13px; 
+            color: var(--stone); 
+            margin-bottom: 24px; 
+            line-height: 1.8; 
+        } 
+
+        /* SELECTED SERVICE DISPLAY */ 
+        .selected-service-bar { 
+            display: none; 
+            padding: 14px 16px; 
+            background: rgba(181,129,58,0.07); 
+            border: 1px solid rgba(181,129,58,0.2); 
+            margin-bottom: 24px; 
+            align-items: center; 
+            justify-content: space-between; 
+        } 
+
+        .selected-service-bar.visible { 
+            display: flex; 
+        } 
+
+        .ssb-name { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 17px; 
+            font-style: italic; 
+            color: var(--cream); 
+        } 
+
+        .ssb-price { 
+            font-size: 15px; 
+            color: var(--copper); 
+        } 
+
+        /* BUTTONS */ 
+        .btn { 
+            display: block; 
+            width: 100%; 
+            padding: 16px 20px; 
+            border: 1px solid rgba(181,129,58,0.55); 
+            background: transparent; 
+            color: var(--copper); 
+            font-family: 'Outfit', sans-serif; 
+            font-size: 9.5px; 
+            font-weight: 300; 
+            letter-spacing: 0.5em; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            transition: all 0.4s; 
+            text-align: center; 
+            text-decoration: none; 
+            margin-top: 20px; 
+            position: relative; 
+            overflow: hidden; 
+        } 
+
+        .btn::before { 
+            content: ''; 
+            position: absolute; 
+            inset: 0; 
+            background: var(--copper); 
+            transform: scaleX(0); 
+            transform-origin: left; 
+            transition: transform 0.45s cubic-bezier(0.22,1,0.36,1); 
+        } 
+
+        .btn:hover::before { 
+            transform: scaleX(1); 
+        } 
+
+        .btn span { 
+            position: relative; 
+            z-index: 1; 
+            transition: color 0.4s; 
+        } 
+
+        .btn:hover span { 
+            color: var(--ink); 
+        } 
+
+        .btn.locked { 
+            opacity: 0.3; 
+            cursor: not-allowed; 
+            pointer-events: none; 
+        } 
+
+        .btn.locked::before { 
+            display: none; 
+        } 
+
+        .btn-note { 
+            text-align: center; 
+            font-size: 11px; 
+            color: var(--muted); 
+            letter-spacing: 0.18em; 
+            margin-top: 10px; 
+        } 
+
+        .btn-back { 
+            display: inline-block; 
+            font-size: 9px; 
+            letter-spacing: 0.4em; 
+            text-transform: uppercase; 
+            color: var(--muted); 
+            cursor: pointer; 
+            margin-top: 16px; 
+            background: none; 
+            border: none; 
+            transition: color 0.3s; 
+        } 
+
+        .btn-back:hover { 
+            color: var(--stone); 
+        } 
+
+        /* AUTOMATED PAYMENT CTA STYLING */
+        .btn-pay-now { 
+            background: var(--green); 
+            border-color: var(--green); 
+            color: var(--bone) !important; 
+        } 
+
+        .btn-pay-now::before { 
+            background: var(--green-hover); 
+        } 
+
+        /* FOOTER */ 
+        .page-footer { 
+            margin-top: 52px; 
+            padding-top: 24px; 
+            border-top: 1px solid rgba(181,129,58,0.08); 
+            display: flex; 
+            justify-content: space-between; 
+        } 
+
+        .pf-brand { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 11px; 
+            letter-spacing: 0.4em; 
+            color: rgba(181,129,58,0.4); 
+        } 
+
+        .pf-note { 
+            font-size: 8.5px; 
+            letter-spacing: 0.35em; 
+            text-transform: uppercase; 
+            color: var(--muted); 
+        } 
+
+        @media (max-width: 580px) { 
+            .service-grid { 
+                grid-template-columns: 1fr; 
+            } 
+        } 
+    </style> 
+    <!-- Calendly Integration --> 
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet"> 
+    <script src="https://assets.calendly.com/assets/external/widget.js" async></script> 
+</head> 
+<body> 
+    <div class="progress-bar"> 
+        <div class="progress-fill" id="progress"></div> 
+    </div> 
+    <nav> 
+        <a href="#" class="nav-brand">SOLUM</a> 
+        <div class="nav-steps"> 
+            <div class="step-dot active" id="dot1"></div> 
+            <div class="step-dot" id="dot2"></div> 
+            <div class="step-dot" id="dot3"></div> 
+            <div class="step-dot" id="dot4"></div> 
+        </div> 
+    </nav> 
+
+    <!-- ══════════════════ SCREEN 1: ELIGE SERVICIO ══════════════════ --> 
+    <div class="screen active" id="screen1"> 
+        <div class="wrap"> 
+            <div style="height:32px"></div> 
+            <div class="s-label">Paso 01 · Seleccione su sesión</div> 
+            <div class="s-title">Protocolo de<br>Renovación.</div> 
+            <p class="s-sub">Confirme la sesión exclusiva diseñada para el restablecimiento óptimo de su rendimiento físico.</p> 
+            
+            <div class="service-grid"> 
+                <!-- Opción 1 -->
+                <div class="service-card" onclick="selectService(this, 'Sesión de Renovación · 60 min', 799, 199.75, 599.25, 'https://mpago.la/1KxXhoD')" id="s1"> 
+                    <div class="s-card-tag">Recuperación Esencial</div> 
+                    <div class="s-card-name">Sesión de Renovación<br>60 minutos</div> 
+                    <div class="s-card-price">$799 <sub>MXN</sub></div> 
+                </div> 
+
+                <!-- Opción 2 -->
+                <div class="service-card" onclick="selectService(this, 'Sesión de Renovación Integral · 90 min', 1200, 300.00, 900.00, 'https://mpago.la/1HXuYoB')" id="s2"> 
+                    <div class="s-card-tag">Bloque Exclusivo · 19:00 HRS</div>
+                    <div class="s-card-name">Sesión de Renovación<br>Integral · 90 minutos</div> 
+                    <div class="s-card-price">$1,200 <sub>MXN</sub></div> 
+                </div> 
+
+                <!-- Opción 3 -->
+                <div class="service-card" onclick="selectService(this, 'Paquete Renovación (4s) · 60 min', 2800, 700.00, 2100.00, 'https://mpago.la/2RFhRTC')" id="s3"> 
+                    <div class="s-card-tag">Paquete de Rendimiento</div> 
+                    <div class="s-card-name">Paquete 4 Sesiones<br>60 min c/u</div> 
+                    <div class="s-card-price">$2,800 <sub>MXN</sub></div> 
+                </div> 
+
+                <!-- Opción 4 -->
+                <div class="service-card" onclick="selectService(this, 'Paquete Renovación (4s) · 90 min', 4400, 1100.00, 3300.00, 'https://mpago.la/1EJjEsh')" id="s4"> 
+                    <div class="s-card-tag">Paquete de Rendimiento Profundo</div> 
+                    <div class="s-card-name">Paquete 4 Sesiones<br>90 min c/u</div> 
+                    <div class="s-card-price">$4,400 <sub>MXN</sub></div> 
+                </div> 
+            </div> 
+
+            <div class="anticipo-box"> 
+                <div class="anticipo-label">Modelo de validación SOLUM</div> 
+                <div class="anticipo-text"> 
+                    Se requiere la confirmación de un <strong>anticipo del 25%</strong> mediante procesamiento digital seguro para validar y blindar su espacio. El <strong>saldo restante del 75%</strong> se liquidará mediante transferencia al término de su sesión. 
+                </div> 
+            </div> 
+
+            <button class="btn locked" id="btn1" onclick="goTo(2)"> <span>Continuar · Leer políticas</span> </button> 
+            <div class="btn-note" id="note1">Seleccione un protocolo para continuar</div> 
+            
+            <div class="page-footer"> 
+                <div class="pf-brand">SOLUM · Kine Recovery</div> 
+                <div class="pf-note">@solum.kn</div> 
+            </div> 
+        </div> 
+    </div> 
+
+    <!-- ══════════════════ SCREEN 2: POLÍTICAS ══════════════════ --> 
+    <div class="screen" id="screen2"> 
+        <div class="wrap"> 
+            <div style="height:32px"></div> 
+            <div class="s-label">Paso 02 · Políticas del servicio</div> 
+            <div class="s-title">Lineamientos de<br>Operación Privada.</div> 
+            <p class="s-sub">El estricto cumplimiento de estas normas asegura los estándares de respeto, seguridad y discreción de la marca.</p> 
+            
+            <div class="policy"> 
+                <div class="p-header"><div class="p-num">01</div><div class="p-title">Naturaleza del servicio</div></div> 
+                <div class="p-body">SOLUM ofrece una <strong>terapia de renovación orgánica y natural</strong> enfocada en el alto rendimiento. No sustituye ningún tipo de tratamiento médico ni de rehabilitación especializada. Al agendar, Usted manifiesta bajo protesta de decir verdad que su estado general de salud es apto para recibir la sesión.</div> 
+            </div> 
+            
+            <div class="policy"> 
+                <div class="p-header"><div class="p-num">02</div><div class="p-title">Privacidad y registro audiovisual</div></div> 
+                <div class="p-body">Su información y expediente se manejan bajo los más estrictos criterios de <strong>confidencialidad corporativa</strong>. Queda <strong>estrictamente prohibido grabar, fotografiar o realizar capturas de audio</strong> antes, durante o después de la sesión. El incumplimiento de esta norma causará la terminación inmediata del servicio.</div> 
+            </div> 
+            
+            <div class="policy"> 
+                <div class="p-header"><div class="p-num">03</div><div class="p-title">Validación de agenda</div></div> 
+                <div class="p-body">La protección temporal de su espacio requiere la conciliación del <strong>anticipo del 25%</strong>. Si el registro no se valida dentro del límite establecido previo a la sesión, la plataforma liberará el bloque automáticamente para mantener la eficiencia logística.</div> 
+                <div class="p-highlight" id="anticipo-display">Seleccione una sesión en el paso anterior para calcular el desglose.</div> 
+            </div> 
+            
+            <div class="policy"> 
+                <div class="p-header"><div class="p-num">04</div><div class="p-title">Gestión y control de asistencia</div></div> 
+                <div class="p-body">Si Usted requiere reagendar o modificar su espacio, le solicitamos notificarlo con la mayor antelación posible. No se aplican recargos ni penalizaciones financieras; el historial de asistencia y cancelaciones se integrará directamente en su expediente interno para la óptima coordinación de futuras reservas.</div> 
+            </div> 
+            
+            <div class="policy"> 
+                <div class="p-header"><div class="p-num">05</div><div class="p-title">Garantía de respeto y conducta</div></div> 
+                <div class="p-body">Mantenemos una política de cero tolerancia ante cualquier actitud intimidante o inapropiada. El especialista se encuentra plenamente facultado para suspender de forma definitiva la sesión y retirarse del domicilio si considera que se ha vulnerado la línea de profesionalismo elemental.</div> 
+            </div> 
+            
+            <div class="policy"> 
+                <div class="p-header"><div class="p-num">06</div><div class="p-title">Criterio de mayoría de edad</div></div> 
+                <div class="p-body">Las sesiones se dirigen exclusivamente a perfiles mayores de 18 años. En casos justificados que involucren un rango menor, se requerirá de manera obligatoria la presencia continua y la autorización firmada del tutor legal en el espacio.</div> 
+            </div> 
+            
+            <div class="policies-note"> 
+                <p><strong>Nota institucional:</strong> Al avanzar al proceso de calendarización, Usted confirma que comprende y acepta en su totalidad los términos de privacidad, logística y lineamientos operativos de SOLUM.</p> 
+            </div> 
+            
+            <div class="accept-wrap"> 
+                <label class="accept-label" onclick="toggleAccept()"> 
+                    <div class="custom-check" id="check-box"> 
+                        <div class="check-inner" id="check-inner"></div> 
+                    </div> 
+                    <div class="accept-text"> 
+                        He leído y acepto los lineamientos de operación de SOLUM. Comprendo las condiciones de privacidad, validación y conducta profesional. 
+                    </div> 
+                </label> 
+            </div> 
+            
+            <button class="btn locked" id="btn2" onclick="goTo(3)"> <span>Continuar · Elegir fecha y hora</span> </button> 
+            <div class="btn-note" id="note2">Acepte los lineamientos para continuar</div> 
+            <button class="btn-back" onclick="goTo(1)">← Regresar</button> 
+            <div class="page-footer"> 
+                <div class="pf-brand">SOLUM · Kine Recovery</div> 
+                <div class="pf-note">Private by design</div> 
+            </div> 
+        </div> 
+    </div> 
+
+    <!-- ══════════════════ SCREEN 3: CALENDLY ══════════════════ --> 
+    <div class="screen" id="screen3"> 
+        <div class="wrap"> 
+            <div style="height:32px"></div> 
+            <div class="s-label">Paso 03 · Elige tu fecha y hora</div> 
+            <div class="s-title">Seleccione<br>su momento.</div> 
+            <div class="selected-service-bar visible" id="ssb"> 
+                <div class="ssb-name" id="ssb-name">—</div> 
+                <div class="ssb-price" id="ssb-price">—</div> 
+            </div> 
+            
+            <div class="calendly-wrap"> 
+                <!-- Widget Inline Nativo de Calendly --> 
+                <div class="calendly-inline-widget" data-url="https://calendly.com/solum-kn?hide_gdpr_banner=1&background_color=07060A&text_color=EAE3D2&primary_color=B5813A" style="min-width:280px;height:700px;"> 
+                </div> 
+            </div> 
+            
+            <button class="btn" onclick="goTo(4)" style="margin-top:24px"> <span>Continuar · Instrucciones de pago</span> </button> 
+            <button class="btn-back" onclick="goTo(2)">← Regresar</button> 
+            <div class="page-footer"> 
+                <div class="pf-brand">SOLUM · Kine Recovery</div> 
+                <div class="pf-note">@solum.kn</div> </div> 
+        </div> 
+    </div> 
+
+    <!-- ══════════════════ SCREEN 4: PAGO ══════════════════ --> 
+    <div class="screen" id="screen4"> 
+        <div class="wrap"> 
+            <div style="height:32px"></div> 
+            <div class="s-label">Paso 04 · Confirma tu pago</div> 
+            <div class="s-title">Validación de<br>Garantía.</div> 
+            <div class="selected-service-bar visible" id="ssb2"> 
+                <div class="ssb-name" id="ssb2-name">—</div> 
+                <div class="ssb-price" id="ssb2-price">—</div> 
+            </div> 
+            
+            <div class="payment-intro"> 
+                <p>Su bloque de tiempo ha sido procesado de manera temporal en la agenda. Para <strong>garantizar el blindaje de su espacio</strong>, realice el anticipo correspondiente respetando la ventana de validación de 12 horas previas a su sesión.</p> 
+            </div> 
+            
+            <div class="payment-steps"> 
+                <div class="pay-step"> 
+                    <div class="pay-step-left">
+                        <div class="pay-step-num">01</div> 
+                        <div class="pay-step-content"> 
+                            <div class="pay-step-title">Anticipo de Validación · 25%</div> 
+                            <div class="pay-step-desc">Se liquida en el siguiente botón.<br>Asegura la ruta de traslado a su domicilio.</div> 
+                        </div> 
+                    </div>
+                    <div class="pay-step-amount" id="anticipo-amount">—<span>anticipo</span></div> 
+                </div> 
+                
+                <div class="pay-step"> 
+                    <div class="pay-step-left">
+                        <div class="pay-step-num">02</div> 
+                        <div class="pay-step-content"> 
+                            <div class="pay-step-title">Saldo de Liquidación · 75%</div> 
+                            <div class="pay-step-desc">Se transfiere al término de la sesión.<br>Mediante SPEI o procesamiento digital.</div> 
+                        </div> 
+                    </div>
+                    <div class="pay-step-amount" id="saldo-amount">—<span>saldo</span></div> 
+                </div> 
+            </div> 
+            
+            <div class="pay-cta-box"> 
+                <div class="pay-cta-title">Asegure su lugar al instante.</div> 
+                <p class="pay-cta-sub">Presione el botón inferior para ingresar al portal blindado de Mercado Pago<br>y acreditar su anticipo de forma directa.</p> 
+                <!-- COMPORTAMIENTO AUTOMATIZADO: El enlace cambia dinámicamente según la tarjeta seleccionada -->
+                <a class="btn btn-pay-now" id="mp-payment-link" href="#" target="_blank"> 
+                    <span>Pagar Anticipo Vía Mercado Pago</span> 
+                </a> 
+            </div> 
+            
+            <div class="rule"></div> 
+            
+            <!-- FILOSOFÍA DE MARCA -->
+            <p style="font-size:13px; color:var(--muted); font-style:italic; line-height:2; text-align:center;"> 
+                "La calma en la tormenta.<br>El coraje de seguir cuando todo duele."
+            </p> 
+            
+            <div class="page-footer" style="margin-top:40px"> 
+                <div class="pf-brand">SOLUM · Kine Recovery</div> 
+                <div class="pf-note">@solum.kn · CDMX</div> 
+            </div> 
+        </div> 
+    </div> 
+
+    <script> 
+        // Variables de estado
+        var currentService = null; 
+        var currentPrice = 0; 
+        var currentAnticipo = 0; 
+        var currentSaldo = 0;
+        var currentLink = "#";
+        var accepted = false; 
+
+        function selectService(el, name, price, anticipo, saldo, link) { 
+            document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); }); 
+            el.classList.add('selected'); 
+            
+            currentService = name; 
+            currentPrice = price; 
+            currentAnticipo = anticipo; 
+            currentSaldo = saldo;
+            currentLink = link;
+            
+            // Habilitar botón de avance
+            document.getElementById('btn1').classList.remove('locked'); 
+            document.getElementById('note1').style.display = 'none';
+            
+            // Actualizar interfaz informativa de políticas
+            document.getElementById('anticipo-display').innerHTML = '<strong>' + name + '</strong> · $' + price.toLocaleString('es-MX') + ' MXN<br>' + 'Anticipo requerido: <strong>$' + anticipo.toLocaleString('es-MX', {minimumFractionDigits: 2}) + ' MXN</strong>'; 
+        } 
+
+        function toggleAccept() { 
+            accepted = !accepted; 
+            var box = document.getElementById('check-box'); 
+            var inner = document.getElementById('check-inner'); 
+            var btn = document.getElementById('btn2'); 
+            var note = document.getElementById('note2'); 
+            if (accepted) { 
+                box.classList.add('checked'); 
+                inner.style.opacity = '1'; 
+                btn.classList.remove('locked'); 
+                note.style.display = 'none'; 
+            } else { 
+                box.classList.remove('checked'); 
+                inner.style.opacity = '0'; 
+                btn.classList.add('locked'); 
+                note.style.display = 'block'; 
+            } 
+        } 
+
+        function goTo(step) { 
+            document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); }); 
+            document.getElementById('screen' + step).classList.add('active'); 
+            
+            document.querySelectorAll('.step-dot').forEach(function(d, i) { 
+                d.classList.remove('active', 'done'); 
+                if (i + 1 === step) d.classList.add('active'); 
+                if (i + 1 < step) d.classList.add('done'); 
+            }); 
+            
+            var pct = { 1: '25%', 2: '50%', 3: '75%', 4: '100%' }; 
+            document.getElementById('progress').style.width = pct[step]; 
+            
+            if (currentService) { 
+                // Actualización de barras de información del servicio seleccionado
+                document.getElementById('ssb-name').textContent = currentService; 
+                document.getElementById('ssb-price').textContent = '$' + currentPrice.toLocaleString('es-MX') + ' MXN'; 
+                document.getElementById('ssb2-name').textContent = currentService; 
+                document.getElementById('ssb2-price').textContent = '$' + currentPrice.toLocaleString('es-MX') + ' MXN'; 
+                
+                // Desglose numérico exacto en la pantalla final de transacciones
+                document.getElementById('anticipo-amount').innerHTML = '$' + currentAnticipo.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '<span>anticipo</span>'; 
+                document.getElementById('saldo-amount').innerHTML = '$' + currentSaldo.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '<span>saldo</span>'; 
+                
+                // Inserción dinámica del enlace de Mercado Pago asignado
+                document.getElementById('mp-payment-link').setAttribute('href', currentLink);
+            } 
+            
+            if (step === 3 && typeof Calendly !== 'undefined') { 
+                Calendly.initInlineWidgets(); 
+            } 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        } 
+    </script> 
+</body> 
+</html>
