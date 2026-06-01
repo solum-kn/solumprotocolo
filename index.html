@@ -427,7 +427,7 @@
             padding: 28px 24px; 
             text-align: center; 
             background: rgba(181,129,58,0.03); 
-            margin-bottom: 24px;
+            margin-bottom: 24px; 
         } 
 
         .pay-cta-title { 
@@ -437,13 +437,6 @@
             font-style: italic; 
             color: var(--bone); 
             margin-bottom: 8px; 
-        } 
-
-        .pay-cta-sub { 
-            font-size: 13px; 
-            color: var(--stone); 
-            margin-bottom: 24px; 
-            line-height: 1.8; 
         } 
 
         /* DUAL BUTTONS */
@@ -600,7 +593,7 @@
             text-transform: uppercase; 
             color: var(--muted); 
             cursor: pointer; 
-            margin-top: 16px; 
+            margin-top: 24px; 
             background: none; 
             border: none; 
             transition: color 0.3s; 
@@ -665,28 +658,24 @@
             <p class="s-sub">Confirme la sesión exclusiva diseñada para el restablecimiento óptimo de su rendimiento físico.</p> 
             
             <div class="service-grid"> 
-                <!-- Opción 1 -->
                 <div class="service-card" onclick="selectService(this, 'Sesión de Renovación · 60 min', 799, 199.75, 'https://mpago.la/1KxXhoD', 'https://mpago.la/31nZWsj')" id="s1"> 
                     <div class="s-card-tag">Recuperación Esencial</div> 
                     <div class="s-card-name">Sesión de Renovación<br>60 minutos</div> 
                     <div class="s-card-price">$799 <sub>MXN</sub></div> 
                 </div> 
 
-                <!-- Opción 2 -->
                 <div class="service-card" onclick="selectService(this, 'Sesión de Renovación Integral · 90 min', 1200, 300.00, 'https://mpago.la/1HXuYoB', 'https://mpago.la/2vkzwMQ')" id="s2"> 
                     <div class="s-card-tag">Bloque Exclusivo · 19:00 HRS</div> 
                     <div class="s-card-name">Sesión de Renovación<br>Integral · 90 minutos</div> 
                     <div class="s-card-price">$1,200 <sub>MXN</sub></div> 
                 </div> 
 
-                <!-- Opción 3 -->
                 <div class="service-card" onclick="selectService(this, 'Paquete Renovación (4s) · 60 min', 2800, 700.00, 'https://mpago.la/2RFhRTC', 'https://mpago.la/2NDfDKH')" id="s3"> 
                     <div class="s-card-tag">Paquete de Rendimiento</div> 
                     <div class="s-card-name">Paquete 4 Sesiones<br>60 min c/u</div> 
                     <div class="s-card-price">$2,800 <sub>MXN</sub></div> 
                 </div> 
 
-                <!-- Opción 4 -->
                 <div class="service-card" onclick="selectService(this, 'Paquete Renovación (4s) · 90 min', 4400, 1100.00, 'https://mpago.la/1EJjEsh', 'https://mpago.la/1mh2PMm')" id="s4"> 
                     <div class="s-card-tag">Paquete de Rendimiento Profundo</div> 
                     <div class="s-card-name">Paquete 4 Sesiones<br>90 min c/u</div> 
@@ -721,7 +710,7 @@
             
             <div class="policy"> 
                 <div class="p-header"><div class="p-num">01</div><div class="p-title">Naturaleza del servicio</div></div> 
-                <div class="p-body">SOLUM ofrece una <strong>terapia de renovación orgánica y natural</strong> enfocada en el alto rendimiento. No sustituye ningún tipo de tratamiento médico ni de rehabilitación especializada. Al agendar, Usted manifiesta bajo protesta de decir verdad que su estado general de salud es apto para recibir la sesión.</div> 
+                <div class="p-body">SOLUM offers una <strong>terapia de renovación orgánica y natural</strong> enfocada en el alto rendimiento. No sustituye ningún tipo de tratamiento médico ni de rehabilitación especializada. Al agendar, Usted manifiesta bajo protesta de decir verdad que su estado general de salud es apto para recibir la sesión.</div> 
             </div> 
             
             <div class="policy"> 
@@ -770,7 +759,7 @@
         </div> 
     </div> 
 
-    <!-- ══════════════════ SCREEN 3: CALENDLY ── --> 
+    <!-- ══════════════════ SCREEN 3: CALENDLY (OPTIMIZADA) ── --> 
     <div class="screen" id="screen3"> 
         <div class="wrap"> 
             <div style="height:32px"></div> 
@@ -781,16 +770,17 @@
                 <div class="ssb-price" id="ssb-price">—</div> 
             </div> 
             
+            <!-- El flujo se controla aquí de forma 100% limpia y automática -->
             <div class="calendly-wrap"> 
                 <div class="calendly-inline-widget" data-url="https://calendly.com/solum-kn?hide_gdpr_banner=1&background_color=07060A&text_color=EAE3D2&primary_color=B5813A" style="min-width:280px;height:700px;"> 
                 </div> 
             </div> 
             
-            <button class="btn" onclick="goTo(4)" style="margin-top:24px"> <span>Continuar · Instrucciones de pago</span> </button> 
-            <button class="btn-back" onclick="goTo(2)">← Regresar</button> 
+            <button class="btn-back" onclick="goTo(2)">← Regresar al paso anterior</button> 
             <div class="page-footer"> 
                 <div class="pf-brand">SOLUM · Kine Recovery</div> 
-                <div class="pf-note">@solum.kn</div> </div> 
+                <div class="pf-note">Automated Flow</div> 
+            </div> 
         </div> 
     </div> 
 
@@ -809,24 +799,20 @@
                 <p>¡Su Ficha de Renovación ha sido registrada con éxito en agenda! Para consolidar el blindaje de su bloque exclusivo, procese su pago a través de los canales oficiales de la marca:</p> 
             </div> 
             
-            <!-- ACCIONES DE PAGO DUALES (Adaptación exacta basada en la estructura visual requerida) -->
             <div class="pay-cta-box"> 
                 <div class="pay-cta-title" style="margin-bottom: 20px;">Opciones de Liquidación</div> 
                 
                 <div class="payment-actions">
-                    <!-- Botón 1: Anticipo 25% -->
                     <a class="btn-pay-option btn-pay-25" id="mp-link-25" href="#" target="_blank">
                         [Apartar Bloque (Anticipo 25%)] · <span id="txt-val-25">$0</span>
                     </a>
                     
-                    <!-- Botón 2: Total 100% -->
                     <a class="btn-pay-option btn-pay-100" id="mp-link-100" href="#" target="_blank">
                         [Liquidar Sesión Completa (100%)] · <span id="txt-val-100">$0</span>
                     </a>
                 </div>
             </div> 
 
-            <!-- NOTA DE CORTESÍA -->
             <div class="cortesia-box">
                 <p><strong>Nota de cortesía:</strong> Si selecciona la opción de anticipo del 25%, recuerde que el saldo restante (75%) se concilia con un mínimo de 12 horas de antelación para liberar la logística de traslado a su domicilio.</p>
             </div>
@@ -906,11 +892,9 @@
                 document.getElementById('ssb2-name').textContent = currentService; 
                 document.getElementById('ssb2-price').textContent = '$' + currentPrice.toLocaleString('es-MX') + ' MXN'; 
                 
-                // Asignación de textos con precios exactos en los botones finales
                 document.getElementById('txt-val-25').textContent = '$' + currentAnticipo.toLocaleString('es-MX', {minimumFractionDigits: 2}) + ' MXN';
                 document.getElementById('txt-val-100').textContent = '$' + currentPrice.toLocaleString('es-MX', {minimumFractionDigits: 2}) + ' MXN';
                 
-                // Asignación de enlaces dinámicos de Mercado Pago
                 document.getElementById('mp-link-25').setAttribute('href', currentLink25);
                 document.getElementById('mp-link-100').setAttribute('href', currentLink100);
             } 
@@ -920,6 +904,13 @@
             } 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
         } 
+
+        /* INTERCEPTOR AUTOMÁTICO DE CALENDLY: Resuelve el salto estético */
+        window.addEventListener('message', function(e) {
+            if (e.data.event && e.data.event === 'calendly.event_scheduled') {
+                goTo(4); 
+            }
+        });
     </script> 
 </body> 
 </html>
