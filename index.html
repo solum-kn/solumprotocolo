@@ -664,7 +664,8 @@
                     <div class="s-card-price">$799 <sub>MXN</sub></div> 
                 </div> 
 
-                <div class="service-card" onclick="selectService(this, 'Sesión de Renovación Integral · 90 min', 1200, 300.00, 'https://mpago.la/1HXuYoB', 'https://mpago.la/2vkzwMQ')" id="s2"> 
+                <!-- Enlace de anticipo 25% corregido con su link real activo: https://mpago.la/2mrTrZa -->
+                <div class="service-card" onclick="selectService(this, 'Sesión de Renovación Integral · 90 min', 1200, 300.00, 'https://mpago.la/2mrTrZa', 'https://mpago.la/2vkzwMQ')" id="s2"> 
                     <div class="s-card-tag">Bloque Exclusivo · 19:00 HRS</div> 
                     <div class="s-card-name">Sesión de Renovación<br>Integral · 90 minutos</div> 
                     <div class="s-card-price">$1,200 <sub>MXN</sub></div> 
@@ -710,7 +711,7 @@
             
             <div class="policy"> 
                 <div class="p-header"><div class="p-num">01</div><div class="p-title">Naturaleza del servicio</div></div> 
-                <div class="p-body">SOLUM offers una <strong>terapia de renovación orgánica y natural</strong> enfocada en el alto rendimiento. No sustituye ningún tipo de tratamiento médico ni de rehabilitación especializada. Al agendar, Usted manifiesta bajo protesta de decir verdad que su estado general de salud es apto para recibir la sesión.</div> 
+                <div class="p-body">SOLUM ofrece una <strong>terapia de renovación orgánica y natural</strong> enfocada en el alto rendimiento. No sustituye ningún tipo de tratamiento médico ni de rehabilitación especializada. Al agendar, Usted manifiesta bajo protesta de decir verdad que su estado general de salud es apto para recibir la sesión.</div> 
             </div> 
             
             <div class="policy"> 
@@ -759,7 +760,7 @@
         </div> 
     </div> 
 
-    <!-- ══════════════════ SCREEN 3: CALENDLY (OPTIMIZADA) ── --> 
+    <!-- ══════════════════ SCREEN 3: CALENDLY ── --> 
     <div class="screen" id="screen3"> 
         <div class="wrap"> 
             <div style="height:32px"></div> 
@@ -770,7 +771,6 @@
                 <div class="ssb-price" id="ssb-price">—</div> 
             </div> 
             
-            <!-- El flujo se controla aquí de forma 100% limpia y automática -->
             <div class="calendly-wrap"> 
                 <div class="calendly-inline-widget" data-url="https://calendly.com/solum-kn?hide_gdpr_banner=1&background_color=07060A&text_color=EAE3D2&primary_color=B5813A" style="min-width:280px;height:700px;"> 
                 </div> 
@@ -905,7 +905,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
         } 
 
-        /* INTERCEPTOR AUTOMÁTICO DE CALENDLY: Resuelve el salto estético */
+        /* INTERCEPTOR AUTOMÁTICO DE CALENDLY */
         window.addEventListener('message', function(e) {
             if (e.data.event && e.data.event === 'calendly.event_scheduled') {
                 goTo(4); 
