@@ -664,7 +664,6 @@
                     <div class="s-card-price">$799 <sub>MXN</sub></div> 
                 </div> 
 
-                <!-- Enlace de anticipo 25% corregido con su link real activo: https://mpago.la/2mrTrZa -->
                 <div class="service-card" onclick="selectService(this, 'Sesión de Renovación Integral · 90 min', 1200, 300.00, 'https://mpago.la/2mrTrZa', 'https://mpago.la/2vkzwMQ')" id="s2"> 
                     <div class="s-card-tag">Bloque Exclusivo · 19:00 HRS</div> 
                     <div class="s-card-name">Sesión de Renovación<br>Integral · 90 minutos</div> 
@@ -711,7 +710,7 @@
             
             <div class="policy"> 
                 <div class="p-header"><div class="p-num">01</div><div class="p-title">Naturaleza del servicio</div></div> 
-                <div class="p-body">SOLUM ofrece una <strong>terapia de renovación orgánica y natural</strong> enfocada en el alto rendimiento. No sustituye ningún tipo de tratamiento médico ni de rehabilitación especializada. Al agendar, Usted manifiesta bajo protesta de decir verdad que su estado general de salud es apto para recibir la sesión.</div> 
+                <div class="p-body">SOLUM offers a <strong>terapia de renovación orgánica y natural</strong> enfocada en el alto rendimiento. No sustituye ningún tipo de tratamiento médico ni de rehabilitación especializada. Al agendar, Usted manifiesta bajo protesta de decir verdad que su estado general de salud es apto para recibir la sesión.</div> 
             </div> 
             
             <div class="policy"> 
@@ -803,15 +802,19 @@
                 <div class="pay-cta-title" style="margin-bottom: 20px;">Opciones de Liquidación</div> 
                 
                 <div class="payment-actions">
-                    <a class="btn-pay-option btn-pay-25" id="mp-link-25" href="#" target="_blank">
+                    <a class="btn-pay-option btn-pay-25" id="mp-link-25" href="#" target="_blank" rel="noopener noreferrer">
                         [Apartar Bloque (Anticipo 25%)] · <span id="txt-val-25">$0</span>
                     </a>
                     
-                    <a class="btn-pay-option btn-pay-100" id="mp-link-100" href="#" target="_blank">
+                    <a class="btn-pay-option btn-pay-100" id="mp-link-100" href="#" target="_blank" rel="noopener noreferrer">
                         [Liquidar Sesión Completa (100%)] · <span id="txt-val-100">$0</span>
                     </a>
                 </div>
             </div> 
+
+            <button class="btn-back" style="display:block; margin: 0 auto 20px; text-align:center; font-size:10px; color:var(--copper); background:none; border:none;" onclick="copiarLinkAuxiliar()">
+                ¿Problemas con el enlace? Clic aquí para copiar link de pago y pegarlo en tu navegador
+            </button>
 
             <div class="cortesia-box">
                 <p><strong>Nota de cortesía:</strong> Si selecciona la opción de anticipo del 25%, recuerde que el saldo restante (75%) se concilia con un mínimo de 12 horas de antelación para liberar la logística de traslado a su domicilio.</p>
@@ -911,6 +914,19 @@
                 goTo(4); 
             }
         });
+
+        /* FUNCIÓN AUXILIAR DE PORTAPAPELES */
+        function copiarLinkAuxiliar() {
+            if (currentLink25 !== "#") {
+                navigator.clipboard.writeText(currentLink25).then(function() {
+                    alert("Enlace de anticipo copiado. Ya puedes pegarlo en Chrome o Safari para pagar sin restricciones.");
+                }).catch(function() {
+                    alert("Por favor, mantén presionado el botón de pago para copiarlo manualmente.");
+                });
+            } else {
+                alert("Por favor, regrese al Paso 1 y seleccione un servicio primero.");
+            }
+        }
     </script> 
 </body> 
 </html>
