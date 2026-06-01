@@ -12,7 +12,6 @@
             --cream: #EAE3D2; 
             --bone: #F2EBD9; 
             --copper: #B5813A; 
-            /* OPTIMIZACIÓN DE CONTRASTE: Tonos aclarados para legibilidad absoluta en pantallas OLED/oscuras */
             --stone: #C4BEB5; 
             --muted: #A39B92; 
             --line: rgba(181,129,58,0.18); 
@@ -423,79 +422,12 @@
             font-weight: 400; 
         } 
 
-        .payment-steps { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 2px; 
-            margin-bottom: 28px; 
-        } 
-
-        .pay-step { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            gap: 16px; 
-            padding: 20px 20px; 
-            border: 1px solid rgba(181,129,58,0.1); 
-            background: rgba(255,255,255,0.01); 
-        } 
-
-        .pay-step-left {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-        }
-
-        .pay-step-num { 
-            font-family: 'Cormorant Garamond', serif; 
-            font-size: 20px; 
-            font-weight: 300; 
-            color: var(--copper); 
-            min-width: 28px; 
-            line-height: 1; 
-            padding-top: 2px; 
-        } 
-
-        .pay-step-content { 
-            flex: 1; 
-        } 
-
-        .pay-step-title { 
-            font-size: 13.5px; 
-            font-weight: 400; 
-            color: var(--cream); 
-            margin-bottom: 4px; 
-            letter-spacing: 0.02em; 
-        } 
-
-        .pay-step-desc { 
-            font-size: 12.5px; 
-            color: var(--stone); 
-            line-height: 1.8; 
-        } 
-
-        .pay-step-amount { 
-            font-size: 22px; 
-            font-weight: 200; 
-            color: var(--bone); 
-            text-align: right; 
-            white-space: nowrap; 
-        } 
-
-        .pay-step-amount span { 
-            display: block; 
-            font-size: 8px; 
-            letter-spacing: 0.3em; 
-            color: var(--stone); 
-            text-transform: uppercase; 
-            text-align: right; 
-        } 
-
         .pay-cta-box { 
             border: 1px solid rgba(181,129,58,0.3); 
             padding: 28px 24px; 
             text-align: center; 
             background: rgba(181,129,58,0.03); 
+            margin-bottom: 24px;
         } 
 
         .pay-cta-title { 
@@ -513,6 +445,62 @@
             margin-bottom: 24px; 
             line-height: 1.8; 
         } 
+
+        /* DUAL BUTTONS */
+        .payment-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .btn-pay-option {
+            display: block;
+            width: 100%;
+            padding: 18px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+
+        .btn-pay-25 {
+            background: transparent;
+            border: 1px solid var(--copper);
+            color: var(--copper);
+        }
+
+        .btn-pay-25:hover {
+            background: rgba(181,129,58,0.1);
+        }
+
+        .btn-pay-100 {
+            background: var(--green);
+            border: 1px solid var(--green);
+            color: var(--bone);
+        }
+
+        .btn-pay-100:hover {
+            background: var(--green-hover);
+            border-color: var(--green-hover);
+        }
+
+        .cortesia-box {
+            border-left: 1px solid var(--copper);
+            background: rgba(181,129,58,0.02);
+            padding: 16px 20px;
+            margin-top: 28px;
+        }
+
+        .cortesia-box p {
+            font-size: 12.5px;
+            color: var(--stone);
+            line-height: 1.9;
+        }
 
         /* SELECTED SERVICE DISPLAY */ 
         .selected-service-bar { 
@@ -541,7 +529,7 @@
             color: var(--copper); 
         } 
 
-        /* BUTTONS */ 
+        /* GENERAL BUTTONS */ 
         .btn { 
             display: block; 
             width: 100%; 
@@ -622,17 +610,6 @@
             color: var(--stone); 
         } 
 
-        /* AUTOMATED PAYMENT CTA STYLING */
-        .btn-pay-now { 
-            background: var(--green); 
-            border-color: var(--green); 
-            color: var(--bone) !important; 
-        } 
-
-        .btn-pay-now::before { 
-            background: var(--green-hover); 
-        } 
-
         /* FOOTER */ 
         .page-footer { 
             margin-top: 52px; 
@@ -662,7 +639,6 @@
             } 
         } 
     </style> 
-    <!-- Calendly Integration --> 
     <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet"> 
     <script src="https://assets.calendly.com/assets/external/widget.js" async></script> 
 </head> 
@@ -690,28 +666,28 @@
             
             <div class="service-grid"> 
                 <!-- Opción 1 -->
-                <div class="service-card" onclick="selectService(this, 'Sesión de Renovación · 60 min', 799, 199.75, 599.25, 'https://mpago.la/1KxXhoD')" id="s1"> 
+                <div class="service-card" onclick="selectService(this, 'Sesión de Renovación · 60 min', 799, 199.75, 'https://mpago.la/1KxXhoD', 'https://mpago.la/31nZWsj')" id="s1"> 
                     <div class="s-card-tag">Recuperación Esencial</div> 
                     <div class="s-card-name">Sesión de Renovación<br>60 minutos</div> 
                     <div class="s-card-price">$799 <sub>MXN</sub></div> 
                 </div> 
 
                 <!-- Opción 2 -->
-                <div class="service-card" onclick="selectService(this, 'Sesión de Renovación Integral · 90 min', 1200, 300.00, 900.00, 'https://mpago.la/1HXuYoB')" id="s2"> 
-                    <div class="s-card-tag">Bloque Exclusivo · 19:00 HRS</div>
+                <div class="service-card" onclick="selectService(this, 'Sesión de Renovación Integral · 90 min', 1200, 300.00, 'https://mpago.la/1HXuYoB', 'https://mpago.la/2vkzwMQ')" id="s2"> 
+                    <div class="s-card-tag">Bloque Exclusivo · 19:00 HRS</div> 
                     <div class="s-card-name">Sesión de Renovación<br>Integral · 90 minutos</div> 
                     <div class="s-card-price">$1,200 <sub>MXN</sub></div> 
                 </div> 
 
                 <!-- Opción 3 -->
-                <div class="service-card" onclick="selectService(this, 'Paquete Renovación (4s) · 60 min', 2800, 700.00, 2100.00, 'https://mpago.la/2RFhRTC')" id="s3"> 
+                <div class="service-card" onclick="selectService(this, 'Paquete Renovación (4s) · 60 min', 2800, 700.00, 'https://mpago.la/2RFhRTC', 'https://mpago.la/2NDfDKH')" id="s3"> 
                     <div class="s-card-tag">Paquete de Rendimiento</div> 
                     <div class="s-card-name">Paquete 4 Sesiones<br>60 min c/u</div> 
                     <div class="s-card-price">$2,800 <sub>MXN</sub></div> 
                 </div> 
 
                 <!-- Opción 4 -->
-                <div class="service-card" onclick="selectService(this, 'Paquete Renovación (4s) · 90 min', 4400, 1100.00, 3300.00, 'https://mpago.la/1EJjEsh')" id="s4"> 
+                <div class="service-card" onclick="selectService(this, 'Paquete Renovación (4s) · 90 min', 4400, 1100.00, 'https://mpago.la/1EJjEsh', 'https://mpago.la/1mh2PMm')" id="s4"> 
                     <div class="s-card-tag">Paquete de Rendimiento Profundo</div> 
                     <div class="s-card-name">Paquete 4 Sesiones<br>90 min c/u</div> 
                     <div class="s-card-price">$4,400 <sub>MXN</sub></div> 
@@ -721,7 +697,7 @@
             <div class="anticipo-box"> 
                 <div class="anticipo-label">Modelo de validación SOLUM</div> 
                 <div class="anticipo-text"> 
-                    Se requiere la confirmación de un <strong>anticipo del 25%</strong> mediante procesamiento digital seguro para validar y blindar su espacio. El <strong>saldo restante del 75%</strong> se liquidará mediante transferencia al término de su sesión. 
+                    Se requiere la confirmación de un <strong>anticipo del 25%</strong> mediante procesamiento digital seguro para validar y blindar su espacio, u optar por la liquidación completa (100%). El saldo restante, en caso de anticipo, se liquidará al término de su sesión.
                 </div> 
             </div> 
 
@@ -755,7 +731,7 @@
             
             <div class="policy"> 
                 <div class="p-header"><div class="p-num">03</div><div class="p-title">Validación de agenda</div></div> 
-                <div class="p-body">La protección temporal de su espacio requiere la conciliación del <strong>anticipo del 25%</strong>. Si el registro no se valida dentro del límite establecido previo a la sesión, la plataforma liberará el bloque automáticamente para mantener la eficiencia logística.</div> 
+                <div class="p-body">La protección temporal de su espacio requiere la conciliación del <strong>anticipo del 25%</strong> o el pago total. Si el registro no se valida dentro del límite establecido previo a la sesión, la plataforma liberará el bloque automáticamente para mantener la eficiencia logística.</div> 
                 <div class="p-highlight" id="anticipo-display">Seleccione una sesión en el paso anterior para calcular el desglose.</div> 
             </div> 
             
@@ -767,11 +743,6 @@
             <div class="policy"> 
                 <div class="p-header"><div class="p-num">05</div><div class="p-title">Garantía de respeto y conducta</div></div> 
                 <div class="p-body">Mantenemos una política de cero tolerancia ante cualquier actitud intimidante o inapropiada. El especialista se encuentra plenamente facultado para suspender de forma definitiva la sesión y retirarse del domicilio si considera que se ha vulnerado la línea de profesionalismo elemental.</div> 
-            </div> 
-            
-            <div class="policy"> 
-                <div class="p-header"><div class="p-num">06</div><div class="p-title">Criterio de mayoría de edad</div></div> 
-                <div class="p-body">Las sesiones se dirigen exclusivamente a perfiles mayores de 18 años. En casos justificados que involucren un rango menor, se requerirá de manera obligatoria la presencia continua y la autorización firmada del tutor legal en el espacio.</div> 
             </div> 
             
             <div class="policies-note"> 
@@ -799,7 +770,7 @@
         </div> 
     </div> 
 
-    <!-- ══════════════════ SCREEN 3: CALENDLY ══════════════════ --> 
+    <!-- ══════════════════ SCREEN 3: CALENDLY ── --> 
     <div class="screen" id="screen3"> 
         <div class="wrap"> 
             <div style="height:32px"></div> 
@@ -811,7 +782,6 @@
             </div> 
             
             <div class="calendly-wrap"> 
-                <!-- Widget Inline Nativo de Calendly --> 
                 <div class="calendly-inline-widget" data-url="https://calendly.com/solum-kn?hide_gdpr_banner=1&background_color=07060A&text_color=EAE3D2&primary_color=B5813A" style="min-width:280px;height:700px;"> 
                 </div> 
             </div> 
@@ -828,55 +798,43 @@
     <div class="screen" id="screen4"> 
         <div class="wrap"> 
             <div style="height:32px"></div> 
-            <div class="s-label">Paso 04 · Confirma tu pago</div> 
-            <div class="s-title">Validación de<br>Garantía.</div> 
+            <div class="s-label">Paso 04 · Registro exitoso</div> 
+            <div class="s-title">Consolide el<br>Blindaje.</div> 
             <div class="selected-service-bar visible" id="ssb2"> 
                 <div class="ssb-name" id="ssb2-name">—</div> 
                 <div class="ssb-price" id="ssb2-price">—</div> 
             </div> 
             
             <div class="payment-intro"> 
-                <p>Su bloque de tiempo ha sido procesado de manera temporal en la agenda. Para <strong>garantizar el blindaje de su espacio</strong>, realice el anticipo correspondiente respetando la ventana de validación de 12 horas previas a su sesión.</p> 
+                <p>¡Su Ficha de Renovación ha sido registrada con éxito en agenda! Para consolidar el blindaje de su bloque exclusivo, procese su pago a través de los canales oficiales de la marca:</p> 
             </div> 
             
-            <div class="payment-steps"> 
-                <div class="pay-step"> 
-                    <div class="pay-step-left">
-                        <div class="pay-step-num">01</div> 
-                        <div class="pay-step-content"> 
-                            <div class="pay-step-title">Anticipo de Validación · 25%</div> 
-                            <div class="pay-step-desc">Se liquida en el siguiente botón.<br>Asegura la ruta de traslado a su domicilio.</div> 
-                        </div> 
-                    </div>
-                    <div class="pay-step-amount" id="anticipo-amount">—<span>anticipo</span></div> 
-                </div> 
-                
-                <div class="pay-step"> 
-                    <div class="pay-step-left">
-                        <div class="pay-step-num">02</div> 
-                        <div class="pay-step-content"> 
-                            <div class="pay-step-title">Saldo de Liquidación · 75%</div> 
-                            <div class="pay-step-desc">Se transfiere al término de la sesión.<br>Mediante SPEI o procesamiento digital.</div> 
-                        </div> 
-                    </div>
-                    <div class="pay-step-amount" id="saldo-amount">—<span>saldo</span></div> 
-                </div> 
-            </div> 
-            
+            <!-- ACCIONES DE PAGO DUALES (Adaptación exacta basada en la estructura visual requerida) -->
             <div class="pay-cta-box"> 
-                <div class="pay-cta-title">Asegure su lugar al instante.</div> 
-                <p class="pay-cta-sub">Presione el botón inferior para ingresar al portal blindado de Mercado Pago<br>y acreditar su anticipo de forma directa.</p> 
-                <!-- COMPORTAMIENTO AUTOMATIZADO: El enlace cambia dinámicamente según la tarjeta seleccionada -->
-                <a class="btn btn-pay-now" id="mp-payment-link" href="#" target="_blank"> 
-                    <span>Pagar Anticipo Vía Mercado Pago</span> 
-                </a> 
+                <div class="pay-cta-title" style="margin-bottom: 20px;">Opciones de Liquidación</div> 
+                
+                <div class="payment-actions">
+                    <!-- Botón 1: Anticipo 25% -->
+                    <a class="btn-pay-option btn-pay-25" id="mp-link-25" href="#" target="_blank">
+                        [Apartar Bloque (Anticipo 25%)] · <span id="txt-val-25">$0</span>
+                    </a>
+                    
+                    <!-- Botón 2: Total 100% -->
+                    <a class="btn-pay-option btn-pay-100" id="mp-link-100" href="#" target="_blank">
+                        [Liquidar Sesión Completa (100%)] · <span id="txt-val-100">$0</span>
+                    </a>
+                </div>
             </div> 
+
+            <!-- NOTA DE CORTESÍA -->
+            <div class="cortesia-box">
+                <p><strong>Nota de cortesía:</strong> Si selecciona la opción de anticipo del 25%, recuerde que el saldo restante (75%) se concilia con un mínimo de 12 horas de antelación para liberar la logística de traslado a su domicilio.</p>
+            </div>
             
             <div class="rule"></div> 
             
-            <!-- FILOSOFÍA DE MARCA -->
             <p style="font-size:13px; color:var(--muted); font-style:italic; line-height:2; text-align:center;"> 
-                "La calma en la tormenta.<br>El coraje de seguir cuando todo duele."
+                Nos vemos pronto. El detalle es respeto.
             </p> 
             
             <div class="page-footer" style="margin-top:40px"> 
@@ -887,29 +845,26 @@
     </div> 
 
     <script> 
-        // Variables de estado
         var currentService = null; 
         var currentPrice = 0; 
         var currentAnticipo = 0; 
-        var currentSaldo = 0;
-        var currentLink = "#";
+        var currentLink25 = "#";
+        var currentLink100 = "#";
         var accepted = false; 
 
-        function selectService(el, name, price, anticipo, saldo, link) { 
+        function selectService(el, name, price, anticipo, link25, link100) { 
             document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); }); 
             el.classList.add('selected'); 
             
             currentService = name; 
             currentPrice = price; 
             currentAnticipo = anticipo; 
-            currentSaldo = saldo;
-            currentLink = link;
+            currentLink25 = link25;
+            currentLink100 = link100;
             
-            // Habilitar botón de avance
             document.getElementById('btn1').classList.remove('locked'); 
             document.getElementById('note1').style.display = 'none';
             
-            // Actualizar interfaz informativa de políticas
             document.getElementById('anticipo-display').innerHTML = '<strong>' + name + '</strong> · $' + price.toLocaleString('es-MX') + ' MXN<br>' + 'Anticipo requerido: <strong>$' + anticipo.toLocaleString('es-MX', {minimumFractionDigits: 2}) + ' MXN</strong>'; 
         } 
 
@@ -946,18 +901,18 @@
             document.getElementById('progress').style.width = pct[step]; 
             
             if (currentService) { 
-                // Actualización de barras de información del servicio seleccionado
                 document.getElementById('ssb-name').textContent = currentService; 
                 document.getElementById('ssb-price').textContent = '$' + currentPrice.toLocaleString('es-MX') + ' MXN'; 
                 document.getElementById('ssb2-name').textContent = currentService; 
                 document.getElementById('ssb2-price').textContent = '$' + currentPrice.toLocaleString('es-MX') + ' MXN'; 
                 
-                // Desglose numérico exacto en la pantalla final de transacciones
-                document.getElementById('anticipo-amount').innerHTML = '$' + currentAnticipo.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '<span>anticipo</span>'; 
-                document.getElementById('saldo-amount').innerHTML = '$' + currentSaldo.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '<span>saldo</span>'; 
+                // Asignación de textos con precios exactos en los botones finales
+                document.getElementById('txt-val-25').textContent = '$' + currentAnticipo.toLocaleString('es-MX', {minimumFractionDigits: 2}) + ' MXN';
+                document.getElementById('txt-val-100').textContent = '$' + currentPrice.toLocaleString('es-MX', {minimumFractionDigits: 2}) + ' MXN';
                 
-                // Inserción dinámica del enlace de Mercado Pago asignado
-                document.getElementById('mp-payment-link').setAttribute('href', currentLink);
+                // Asignación de enlaces dinámicos de Mercado Pago
+                document.getElementById('mp-link-25').setAttribute('href', currentLink25);
+                document.getElementById('mp-link-100').setAttribute('href', currentLink100);
             } 
             
             if (step === 3 && typeof Calendly !== 'undefined') { 
