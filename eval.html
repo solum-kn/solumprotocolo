@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOLUM · Evaluación de Sesión</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=Outfit:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:    #07060A;
+      --cream:  #EAE3D2;
+      --bone:   #F2EBD9;
+      --copper: #B5813A;
+      --stone:  #7A7268;
+      --muted:  #4A4440;
+      --line:   rgba(181,129,58,0.18);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--ink);
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      mix-blend-mode: screen;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      max-width: 440px;
+      width: 100%;
+    }
+
+    /* HEADER */
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px;
+      font-weight: 200;
+      color: var(--bone);
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--stone);
+      line-height: 2;
+      margin-bottom: 8px;
+    }
+
+    .client-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      color: var(--copper);
+      margin-bottom: 36px;
+    }
+
+    .rule {
+      height: 1px;
+      background: linear-gradient(90deg, rgba(181,129,58,0.3), transparent 70%);
+      margin: 32px 0;
+    }
+
+    /* PREGUNTA 1 — ESTRELLA */
+    .q-label {
+      font-size: 7.5px;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 14px;
+    }
+
+    .q-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--cream);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .stars {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .star {
+      font-size: 32px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+      line-height: 1;
+    }
+
+    .star:hover,
+    .star.active { color: var(--copper); transform: scale(1.1); }
+
+    .star-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      margin-top: 6px;
+      min-height: 16px;
+      transition: color 0.2s;
+    }
+
+    /* PREGUNTA 2 — COMENTARIO */
+    .q-section { margin-bottom: 32px; }
+
+    .q-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(181,129,58,0.25);
+      padding: 12px 0;
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13.5px;
+      font-weight: 300;
+      outline: none;
+      resize: none;
+      height: 80px;
+      transition: border-color 0.3s;
+      letter-spacing: 0.03em;
+    }
+
+    .q-textarea:focus { border-color: var(--copper); }
+    .q-textarea::placeholder { color: var(--muted); font-style: italic; }
+
+    .q-hint {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 8px;
+      letter-spacing: 0.1em;
+      line-height: 1.7;
+    }
+
+    /* SUBMIT */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      border: 1px solid rgba(181,129,58,0.55);
+      background: transparent;
+      color: var(--copper);
+      font-family: 'Outfit', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.52em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--copper);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .btn-submit:hover::before { transform: scaleX(1); }
+
+    .btn-submit span {
+      position: relative;
+      z-index: 1;
+      transition: color 0.4s;
+    }
+
+    .btn-submit:hover span { color: var(--ink); }
+
+    /* GRACIAS */
+    .gracias {
+      display: none;
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .gracias-symbol {
+      margin-bottom: 28px;
+    }
+
+    .gracias-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 200;
+      color: var(--bone);
+      margin-bottom: 12px;
+    }
+
+    .gracias-text {
+      font-size: 13px;
+      color: var(--stone);
+      line-height: 2.1;
+      margin-bottom: 28px;
+    }
+
+    .gracias-tag {
+      font-size: 9px;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: rgba(181,129,58,0.4);
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 44px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(181,129,58,0.08);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .f-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      color: rgba(181,129,58,0.3);
+    }
+
+    .f-handle {
+      font-size: 8px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(122,114,104,0.25);
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- FORMULARIO -->
+  <div id="eval-form">
+
+    <div class="brand">SOLUM · Kine Recovery</div>
+    <div class="title">Sesión<br>finalizada.</div>
+    <p class="subtitle">Tu experiencia importa. Compártela en menos de un minuto.</p>
+    <div class="client-name" id="display-nombre">—</div>
+
+    <div class="rule"></div>
+
+    <!-- PREGUNTA 1: CALIFICACIÓN -->
+    <div class="q-section">
+      <div class="q-label">01 · Evaluación</div>
+      <div class="q-title">¿Tu sesión finalizó<br>con éxito?</div>
+
+      <div class="stars" id="stars">
+        <span class="star" data-val="1" onclick="setStars(1)">★</span>
+        <span class="star" data-val="2" onclick="setStars(2)">★</span>
+        <span class="star" data-val="3" onclick="setStars(3)">★</span>
+        <span class="star" data-val="4" onclick="setStars(4)">★</span>
+        <span class="star" data-val="5" onclick="setStars(5)">★</span>
+      </div>
+      <div class="star-label" id="star-label">Toca una estrella</div>
+    </div>
+
+    <div class="rule"></div>
+
+    <!-- PREGUNTA 2: COMENTARIO -->
+    <div class="q-section">
+      <div class="q-label">02 · Comentario</div>
+      <div class="q-title">¿Algo que quieras compartir<br>o sugerir?</div>
+      <textarea class="q-textarea" id="comentario"
+        placeholder="Tu experiencia, una sugerencia, o algo que te gustaría ver en nuestro Instagram..."></textarea>
+      <div class="q-hint">Opcional · Tu comentario es completamente privado y confidencial.</div>
+    </div>
+
+    <button class="btn-submit" onclick="enviarEval()">
+      <span>Enviar evaluación</span>
+    </button>
+
+    <div class="footer">
+      <div class="f-brand">SOLUM · Kine Recovery</div>
+      <div class="f-handle">@solum.kn</div>
+    </div>
+
+  </div>
+
+  <!-- GRACIAS -->
+  <div class="gracias" id="gracias">
+    <div class="gracias-symbol">
+      <svg width="52" height="30" viewBox="0 0 80 44" fill="none">
+        <line x1="0" y1="6"  x2="80" y2="6"  stroke="#B5813A" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="0" y1="22" x2="80" y2="22" stroke="#F2EBD9" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="0" y1="38" x2="56" y2="38" stroke="#B5813A" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="gracias-title">Gracias.</div>
+    <p class="gracias-text">
+      Tu evaluación fue recibida.<br>
+      Nos vemos en la próxima sesión.
+    </p>
+    <div class="gracias-tag">SOLUM · Private by design</div>
+  </div>
+
+</div>
+
+<script>
+  var estrellas = 0;
+  var starLabels = ['', 'Necesita mejorar', 'Regular', 'Buena sesión', 'Muy buena', 'Excelente · Sin reservas'];
+
+  // Leer params de URL
+  var params = new URLSearchParams(window.location.search);
+  var nombre = params.get('nombre') || 'Cliente';
+  document.getElementById('display-nombre').textContent = decodeURIComponent(nombre);
+
+  function setStars(val) {
+    estrellas = val;
+    document.querySelectorAll('.star').forEach(function(s, i) {
+      s.classList.toggle('active', i < val);
+    });
+    document.getElementById('star-label').textContent = starLabels[val];
+    document.getElementById('star-label').style.color = val >= 4 ? 'var(--copper)' : 'var(--stone)';
+  }
+
+  function enviarEval() {
+    if (estrellas === 0) {
+      alert('Por favor selecciona una calificación.');
+      return;
+    }
+
+    var comentario = document.getElementById('comentario').value;
+    var id         = params.get('id') || '';
+
+    // Enviar a Google Forms (reemplaza la URL con tu formulario de evaluación)
+    var formUrl = "https://docs.google.com/forms/d/e/TU_FORM_ID_EVALUACION/formResponse";
+    var data = new FormData();
+    // ⚠️ Reemplaza los entry IDs con los de tu formulario de evaluación
+    data.append("entry.XXXXXXXXX", decodeURIComponent(nombre)); // Nombre
+    data.append("entry.XXXXXXXXX", estrellas.toString());        // Calificación
+    data.append("entry.XXXXXXXXX", comentario);                  // Comentario
+    data.append("entry.XXXXXXXXX", id);                          // ID sesión
+
+    fetch(formUrl, { method: 'POST', body: data, mode: 'no-cors' })
+      .catch(function(){});
+
+    // Mostrar gracias
+    document.getElementById('eval-form').style.display = 'none';
+    document.getElementById('gracias').style.display = 'block';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOLUM · Panel Interno</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=Outfit:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:    #07060A;
+      --deep:   #0D0C10;
+      --cream:  #EAE3D2;
+      --bone:   #F2EBD9;
+      --copper: #B5813A;
+      --stone:  #7A7268;
+      --muted:  #4A4440;
+      --line:   rgba(181,129,58,0.18);
+      --green:  #1b4332;
+      --red:    #4A1515;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      mix-blend-mode: screen;
+    }
+
+    /* ── LOGIN ── */
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .login-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 200;
+      letter-spacing: 0.35em;
+      color: var(--bone);
+    }
+
+    .login-label {
+      font-size: 7.5px;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
+
+    .login-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(181,129,58,0.35);
+      padding: 12px 0;
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      outline: none;
+      width: 240px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+
+    .login-input:focus { border-color: var(--copper); }
+    .login-input::placeholder { color: var(--muted); font-style: italic; }
+
+    .login-btn {
+      padding: 14px 44px;
+      border: 1px solid rgba(181,129,58,0.55);
+      background: transparent;
+      color: var(--copper);
+      font-family: 'Outfit', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.4s;
+    }
+
+    .login-btn:hover { background: var(--copper); color: var(--ink); }
+
+    .login-error {
+      font-size: 11px;
+      color: #c0392b;
+      letter-spacing: 0.1em;
+      display: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 99;
+      background: rgba(7,6,10,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 32px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      color: var(--bone);
+    }
+
+    .nav-tag {
+      font-size: 7.5px;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
+
+    /* ── MAIN ── */
+    .main {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 72px 32px 80px;
+    }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-bottom: 48px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(181,129,58,0.1);
+      padding: 20px 18px;
+    }
+
+    .stat-label {
+      font-size: 7px;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 200;
+      color: var(--bone);
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── SECTION ── */
+    .sec-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(181,129,58,0.1);
+    }
+
+    .sec-label {
+      font-size: 7.5px;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
+
+    .sec-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--bone);
+    }
+
+    /* ── SESSION CARD ── */
+    .session-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 48px;
+    }
+
+    .session-card {
+      border: 1px solid rgba(181,129,58,0.1);
+      background: rgba(255,255,255,0.01);
+      padding: 20px 22px;
+      transition: border-color 0.3s;
+    }
+
+    .session-card.pendiente { border-left: 2px solid #B5813A; }
+    .session-card.confirmada { border-left: 2px solid #2ecc71; }
+    .session-card.finalizada { border-left: 2px solid var(--muted); opacity: 0.6; }
+
+    .session-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .session-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+    }
+
+    .session-status {
+      font-size: 7px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid;
+    }
+
+    .status-pendiente { color: #B5813A; border-color: rgba(181,129,58,0.3); }
+    .status-confirmada { color: #2ecc71; border-color: rgba(46,204,113,0.3); }
+    .status-finalizada { color: var(--muted); border-color: rgba(74,68,64,0.3); }
+
+    .session-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .meta-item {
+      font-size: 11px;
+      color: var(--stone);
+      letter-spacing: 0.05em;
+    }
+
+    .meta-item strong {
+      color: var(--cream);
+      font-weight: 400;
+    }
+
+    .session-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 8px 18px;
+      border: 1px solid;
+      font-size: 8px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.35s;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .btn-confirmar {
+      border-color: rgba(46,204,113,0.4);
+      color: #2ecc71;
+    }
+    .btn-confirmar:hover { background: rgba(46,204,113,0.1); }
+
+    .btn-finalizar {
+      border-color: rgba(181,129,58,0.4);
+      color: var(--copper);
+    }
+    .btn-finalizar:hover { background: rgba(181,129,58,0.1); }
+
+    .btn-whatsapp {
+      border-color: rgba(37,211,102,0.4);
+      color: #25D366;
+    }
+    .btn-whatsapp:hover { background: rgba(37,211,102,0.08); }
+
+    .btn-notas {
+      border-color: rgba(122,114,104,0.3);
+      color: var(--stone);
+    }
+    .btn-notas:hover { background: rgba(122,114,104,0.08); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(7,6,10,0.92);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #0D0C10;
+      border: 1px solid var(--line);
+      padding: 36px 36px;
+      max-width: 480px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--bone);
+      margin-bottom: 6px;
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--stone);
+      margin-bottom: 28px;
+      line-height: 1.8;
+    }
+
+    .modal-field {
+      margin-bottom: 22px;
+    }
+
+    .modal-field label {
+      display: block;
+      font-size: 7.5px;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 10px;
+    }
+
+    .modal-field input,
+    .modal-field textarea,
+    .modal-field select {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(181,129,58,0.25);
+      padding: 10px 0;
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .modal-field input:focus,
+    .modal-field textarea:focus,
+    .modal-field select:focus { border-color: var(--copper); }
+
+    .modal-field textarea { resize: none; height: 80px; }
+
+    .modal-field select option { background: #0D0C10; color: var(--cream); }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid;
+      font-family: 'Outfit', sans-serif;
+      font-size: 8.5px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.35s;
+    }
+
+    .modal-btn-confirm {
+      border-color: var(--copper);
+      color: var(--copper);
+    }
+    .modal-btn-confirm:hover { background: var(--copper); color: var(--ink); }
+
+    .modal-btn-cancel {
+      border-color: rgba(122,114,104,0.3);
+      color: var(--muted);
+    }
+    .modal-btn-cancel:hover { border-color: var(--stone); color: var(--stone); }
+
+    /* ── NUEVA SESIÓN FORM ── */
+    .nueva-sesion-form {
+      border: 1px solid rgba(181,129,58,0.12);
+      padding: 28px 24px;
+      margin-bottom: 48px;
+      background: rgba(255,255,255,0.01);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-field {
+      margin-bottom: 4px;
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 7px;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 8px;
+    }
+
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(181,129,58,0.2);
+      padding: 9px 0;
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus { border-color: var(--copper); }
+
+    .form-field select option { background: #0D0C10; }
+
+    /* ── RULE ── */
+    .rule {
+      height: 1px;
+      background: linear-gradient(90deg, rgba(181,129,58,0.2), transparent 70%);
+      margin: 40px 0;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0D0C10;
+      border: 1px solid var(--copper);
+      color: var(--cream);
+      padding: 14px 28px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+      white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* FOOTER */
+    .page-footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(181,129,58,0.08);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .pf-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      color: rgba(181,129,58,0.3);
+    }
+
+    .pf-note {
+      font-size: 8px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(122,114,104,0.25);
+    }
+
+    @media (max-width: 580px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-brand">SOLUM</div>
+  <div class="login-label">Panel interno · Acceso privado</div>
+  <input class="login-input" type="password" id="loginInput"
+    placeholder="Contraseña" onkeydown="if(event.key==='Enter') checkLogin()">
+  <button class="login-btn" onclick="checkLogin()">Acceder</button>
+  <div class="login-error" id="loginError">Acceso denegado</div>
+</div>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-brand">SOLUM</div>
+  <div class="nav-tag">Panel Interno · Privado</div>
+</nav>
+
+<!-- ── MAIN ── -->
+<div class="main" id="mainContent" style="display:none">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Sesiones hoy</div>
+      <div class="stat-value" id="stat-hoy">0</div>
+      <div class="stat-sub">programadas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Este mes</div>
+      <div class="stat-value" id="stat-mes">0</div>
+      <div class="stat-sub">sesiones</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ingreso mes</div>
+      <div class="stat-value" id="stat-ingreso">$0</div>
+      <div class="stat-sub">MXN</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Clientes activos</div>
+      <div class="stat-value" id="stat-clientes">0</div>
+      <div class="stat-sub">registrados</div>
+    </div>
+  </div>
+
+  <!-- NUEVA SESIÓN MANUAL -->
+  <div class="sec-header">
+    <div class="sec-label">Registro manual</div>
+    <div class="sec-title">Nueva Sesión</div>
+  </div>
+
+  <div class="nueva-sesion-form">
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Nombre del cliente</label>
+        <input type="text" id="ns-nombre" placeholder="Nombre completo">
+      </div>
+      <div class="form-field">
+        <label>WhatsApp</label>
+        <input type="text" id="ns-telefono" placeholder="55XXXXXXXX">
+      </div>
+      <div class="form-field">
+        <label>Servicio</label>
+        <select id="ns-servicio">
+          <option value="Sesión 60 min · $799">Sesión 60 min · $799</option>
+          <option value="Sesión 90 min · $1,200">Sesión 90 min · $1,200</option>
+          <option value="Pack 4×60 min · $2,800">Pack 4×60 min · $2,800</option>
+          <option value="Pack 4×90 min · $4,400">Pack 4×90 min · $4,400</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Zona</label>
+        <select id="ns-zona">
+          <option value="Santa Fe · 18:00 o 19:00 hrs">Santa Fe · 18:00 o 19:00</option>
+          <option value="Polanco · 19:00 o 20:00 hrs">Polanco · 19:00 o 20:00</option>
+          <option value="Lomas · 19:00 o 20:00 hrs">Lomas · 19:00 o 20:00</option>
+          <option value="Sábado / Domingo · Horario flexible">Fin de semana · Flexible</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Fecha</label>
+        <input type="date" id="ns-fecha">
+      </div>
+      <div class="form-field">
+        <label>Hora</label>
+        <select id="ns-hora">
+          <option>18:00</option>
+          <option>19:00</option>
+          <option>20:00</option>
+          <option>09:00</option>
+          <option>10:00</option>
+          <option>11:00</option>
+          <option>12:00</option>
+          <option>13:00</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="action-btn btn-confirmar" style="margin-top:20px; width:100%; padding:13px;"
+      onclick="agregarSesion()">
+      + Registrar sesión
+    </button>
+  </div>
+
+  <!-- SESIONES ACTIVAS -->
+  <div class="sec-header">
+    <div class="sec-label">Control operativo</div>
+    <div class="sec-title">Sesiones Activas</div>
+  </div>
+
+  <div class="session-list" id="sessionList">
+    <!-- Se generan dinámicamente -->
+    <div style="padding:32px; text-align:center; font-size:13px; color:var(--muted);">
+      No hay sesiones registradas. Agrega una arriba o espera a que lleguen del formulario.
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- HISTORIAL -->
+  <div class="sec-header">
+    <div class="sec-label">Registro</div>
+    <div class="sec-title">Historial del Mes</div>
+  </div>
+
+  <div id="historialList" style="font-size:13px; color:var(--muted); padding:20px 0;">
+    Las sesiones finalizadas aparecen aquí.
+  </div>
+
+  <div class="page-footer">
+    <div class="pf-brand">SOLUM · Panel Interno</div>
+    <div class="pf-note">Privado · Solo uso interno</div>
+  </div>
+
+</div>
+
+<!-- ── MODAL: FINALIZAR SESIÓN ── -->
+<div class="modal-overlay" id="modalFinalizar">
+  <div class="modal">
+    <div class="modal-title">Sesión Finalizada</div>
+    <div class="modal-sub" id="modal-client-name">Registra las notas de cierre. El cliente recibirá el mensaje de seguimiento automáticamente.</div>
+
+    <div class="modal-field">
+      <label>Estatus de pago final</label>
+      <select id="modal-pago">
+        <option value="Liquidado · Efectivo">Liquidado · Efectivo</option>
+        <option value="Liquidado · Transferencia">Liquidado · Transferencia</option>
+        <option value="Liquidado · Mercado Pago">Liquidado · Mercado Pago</option>
+        <option value="Solo anticipo recibido">Solo anticipo recibido</option>
+      </select>
+    </div>
+
+    <div class="modal-field">
+      <label>Notas de evolución</label>
+      <textarea id="modal-notas" placeholder="Tensión encontrada, aceite usado, observaciones técnicas..."></textarea>
+    </div>
+
+    <div class="modal-field">
+      <label>Siguiente sesión sugerida</label>
+      <input type="text" id="modal-siguiente" placeholder="Ej: En 2 semanas · Enfoque en espalda baja">
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" onclick="cerrarModal()">Cancelar</button>
+      <button class="modal-btn modal-btn-confirm" onclick="confirmarFinalizacion()">Finalizar y enviar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ══════════════════════════════════════
+  // CONTRASEÑA — Cambia esto
+  // ══════════════════════════════════════
+  var PASS = "solum2025";
+
+  // ══════════════════════════════════════
+  // DATOS EN MEMORIA
+  // ══════════════════════════════════════
+  var sesiones = JSON.parse(localStorage.getItem('solum_sesiones') || '[]');
+  var sessionActiva = null;
+
+  // ══════════════════════════════════════
+  // LOGIN
+  // ══════════════════════════════════════
+  function checkLogin() {
+    var val = document.getElementById('loginInput').value;
+    if (val === PASS) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      renderSesiones();
+      actualizarStats();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('loginInput').value = '';
+    }
+  }
+
+  // ══════════════════════════════════════
+  // AGREGAR SESIÓN MANUAL
+  // ══════════════════════════════════════
+  function agregarSesion() {
+    var nombre   = document.getElementById('ns-nombre').value.trim();
+    var telefono = document.getElementById('ns-telefono').value.trim();
+    var servicio = document.getElementById('ns-servicio').value;
+    var zona     = document.getElementById('ns-zona').value;
+    var fecha    = document.getElementById('ns-fecha').value;
+    var hora     = document.getElementById('ns-hora').value;
+
+    if (!nombre || !telefono || !fecha) {
+      showToast('Completa nombre, teléfono y fecha.');
+      return;
+    }
+
+    var sesion = {
+      id:       Date.now(),
+      nombre:   nombre,
+      telefono: telefono,
+      servicio: servicio,
+      zona:     zona,
+      fecha:    fecha,
+      hora:     hora,
+      estatus:  'pendiente',
+      notas:    '',
+      siguiente: '',
+      pago:     ''
+    };
+
+    sesiones.unshift(sesion);
+    guardar();
+    renderSesiones();
+    actualizarStats();
+    showToast('Sesión registrada · ' + nombre);
+
+    // Limpiar
+    document.getElementById('ns-nombre').value = '';
+    document.getElementById('ns-telefono').value = '';
+    document.getElementById('ns-fecha').value = '';
+  }
+
+  // ══════════════════════════════════════
+  // RENDER SESIONES
+  // ══════════════════════════════════════
+  function renderSesiones() {
+    var list = document.getElementById('sessionList');
+    var historial = document.getElementById('historialList');
+    var activas = sesiones.filter(function(s){ return s.estatus !== 'finalizada'; });
+    var finalizadas = sesiones.filter(function(s){ return s.estatus === 'finalizada'; });
+
+    if (activas.length === 0) {
+      list.innerHTML = '<div style="padding:32px; text-align:center; font-size:13px; color:var(--muted);">No hay sesiones activas.</div>';
+    } else {
+      list.innerHTML = activas.map(function(s) {
+        var statusClass = s.estatus === 'confirmada' ? 'status-confirmada' : 'status-pendiente';
+        var statusLabel = s.estatus === 'confirmada' ? 'Confirmada' : 'Pendiente · Anticipo';
+        var cardClass   = s.estatus === 'confirmada' ? 'confirmada' : 'pendiente';
+
+        return '<div class="session-card ' + cardClass + '" id="card-' + s.id + '">' +
+          '<div class="session-top">' +
+            '<div class="session-name">' + s.nombre + '</div>' +
+            '<div class="session-status ' + statusClass + '">' + statusLabel + '</div>' +
+          '</div>' +
+          '<div class="session-meta">' +
+            '<div class="meta-item"><strong>' + s.fecha + '</strong> · ' + s.hora + '</div>' +
+            '<div class="meta-item">' + s.servicio + '</div>' +
+            '<div class="meta-item">' + s.zona + '</div>' +
+          '</div>' +
+          '<div class="session-actions">' +
+            (s.estatus === 'pendiente' ?
+              '<button class="action-btn btn-confirmar" onclick="confirmarAnticipo(' + s.id + ')">✓ Anticipo recibido</button>' : '') +
+            '<button class="action-btn btn-finalizar" onclick="abrirModalFinalizar(' + s.id + ')">◉ Sesión finalizada</button>' +
+            '<button class="action-btn btn-whatsapp" onclick="enviarWhatsApp(\'' + s.telefono + '\', \'' + s.nombre + '\', \'' + s.servicio + '\')">WhatsApp</button>' +
+            '<button class="action-btn btn-notas" onclick="verNotas(' + s.id + ')">Notas</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    // Historial
+    if (finalizadas.length === 0) {
+      historial.innerHTML = '<div style="font-size:13px; color:var(--muted); padding:20px 0;">Las sesiones finalizadas aparecen aquí.</div>';
+    } else {
+      historial.innerHTML = finalizadas.slice(0, 10).map(function(s) {
+        return '<div class="session-card finalizada" style="margin-bottom:2px;">' +
+          '<div class="session-top">' +
+            '<div class="session-name">' + s.nombre + '</div>' +
+            '<div class="session-status status-finalizada">Finalizada</div>' +
+          '</div>' +
+          '<div class="session-meta">' +
+            '<div class="meta-item"><strong>' + s.fecha + '</strong></div>' +
+            '<div class="meta-item">' + s.servicio + '</div>' +
+            '<div class="meta-item">' + (s.pago || 'Pago no registrado') + '</div>' +
+          '</div>' +
+          (s.notas ? '<div style="font-size:11px; color:var(--muted); padding-top:8px; font-style:italic;">' + s.notas + '</div>' : '') +
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // CONFIRMAR ANTICIPO
+  // ══════════════════════════════════════
+  function confirmarAnticipo(id) {
+    var s = sesiones.find(function(x){ return x.id === id; });
+    if (s) {
+      s.estatus = 'confirmada';
+      guardar();
+      renderSesiones();
+      showToast('Anticipo confirmado · ' + s.nombre);
+    }
+  }
+
+  // ══════════════════════════════════════
+  // MODAL FINALIZAR
+  // ══════════════════════════════════════
+  function abrirModalFinalizar(id) {
+    sessionActiva = id;
+    var s = sesiones.find(function(x){ return x.id === id; });
+    document.getElementById('modal-client-name').textContent =
+      s.nombre + ' · ' + s.servicio + ' · ' + s.fecha;
+    document.getElementById('modal-notas').value = '';
+    document.getElementById('modal-siguiente').value = '';
+    document.getElementById('modalFinalizar').classList.add('open');
+  }
+
+  function cerrarModal() {
+    document.getElementById('modalFinalizar').classList.remove('open');
+    sessionActiva = null;
+  }
+
+  function confirmarFinalizacion() {
+    var s = sesiones.find(function(x){ return x.id === sessionActiva; });
+    if (!s) return;
+
+    s.estatus    = 'finalizada';
+    s.notas      = document.getElementById('modal-notas').value;
+    s.siguiente  = document.getElementById('modal-siguiente').value;
+    s.pago       = document.getElementById('modal-pago').value;
+
+    guardar();
+    cerrarModal();
+    renderSesiones();
+    actualizarStats();
+
+    // Generar link de WhatsApp post-sesión
+    enviarPostSesion(s);
+    showToast('Sesión finalizada · Mensaje generado para ' + s.nombre);
+  }
+
+  // ══════════════════════════════════════
+  // WHATSAPP POST-SESIÓN — MENSAJE PREMIUM
+  // ══════════════════════════════════════
+  function enviarPostSesion(s) {
+    var linkEval = "https://solum-kn.github.io/eval.html?id=" + s.id + "&nombre=" + encodeURIComponent(s.nombre);
+
+    var msg =
+      "SOLUM · Kine Recovery\n" +
+      "─────────────────────\n\n" +
+      "Hola " + s.nombre + ".\n\n" +
+      "Tu sesión ha concluido con éxito.\n\n" +
+      "Servicio: " + s.servicio + "\n" +
+      "Fecha: " + s.fecha + " · " + s.hora + "\n" +
+      "Estatus de pago: " + s.pago + "\n\n" +
+      "─────────────────────\n" +
+      "Nos gustaría conocer tu experiencia.\n" +
+      "Es breve y completamente privado:\n\n" +
+      linkEval + "\n\n" +
+      "─────────────────────\n" +
+      "SOLUM · @solum.kn · CDMX\n" +
+      "Private by design.";
+
+    var url = "https://wa.me/52" + s.telefono + "?text=" + encodeURIComponent(msg);
+    window.open(url, '_blank');
+  }
+
+  // ══════════════════════════════════════
+  // WHATSAPP MANUAL
+  // ══════════════════════════════════════
+  function enviarWhatsApp(tel, nombre, servicio) {
+    var msg =
+      "Hola " + nombre + ", te escribimos de SOLUM.\n\n" +
+      "Tu sesión de *" + servicio + "* está confirmada.\n\n" +
+      "Cualquier duda estamos aquí.\n\n" +
+      "SOLUM · @solum.kn";
+    var url = "https://wa.me/52" + tel + "?text=" + encodeURIComponent(msg);
+    window.open(url, '_blank');
+  }
+
+  // ══════════════════════════════════════
+  // VER NOTAS
+  // ══════════════════════════════════════
+  function verNotas(id) {
+    var s = sesiones.find(function(x){ return x.id === id; });
+    alert(s.notas || 'Sin notas registradas aún.');
+  }
+
+  // ══════════════════════════════════════
+  // STATS
+  // ══════════════════════════════════════
+  function actualizarStats() {
+    var hoy = new Date().toISOString().split('T')[0];
+    var mesActual = hoy.substring(0, 7);
+
+    var hoyCount = sesiones.filter(function(s){
+      return s.fecha === hoy && s.estatus !== 'finalizada';
+    }).length;
+
+    var mesCount = sesiones.filter(function(s){
+      return s.fecha && s.fecha.startsWith(mesActual);
+    }).length;
+
+    var ingreso = sesiones.filter(function(s){
+      return s.fecha && s.fecha.startsWith(mesActual) && s.estatus === 'finalizada';
+    }).reduce(function(acc, s) {
+      var precio = parseInt(s.servicio.replace(/[^0-9]/g, '').substring(0, 4)) || 0;
+      return acc + precio;
+    }, 0);
+
+    var clientes = [...new Set(sesiones.map(function(s){ return s.telefono; }))].length;
+
+    document.getElementById('stat-hoy').textContent      = hoyCount;
+    document.getElementById('stat-mes').textContent      = mesCount;
+    document.getElementById('stat-ingreso').textContent  = '$' + ingreso.toLocaleString('es-MX');
+    document.getElementById('stat-clientes').textContent = clientes;
+  }
+
+  // ══════════════════════════════════════
+  // GUARDAR
+  // ══════════════════════════════════════
+  function guardar() {
+    localStorage.setItem('solum_sesiones', JSON.stringify(sesiones));
+  }
+
+  // ══════════════════════════════════════
+  // TOAST
+  // ══════════════════════════════════════
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  }
+</script>
+</body>
+</html>
